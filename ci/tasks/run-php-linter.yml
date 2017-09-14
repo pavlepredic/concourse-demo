@@ -1,0 +1,14 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: alexwijn/docker-git-php-composer
+
+inputs:
+- name: source-code
+
+run:
+  path: ci/scripts/run-php-linter.sh
+  dir: source-code

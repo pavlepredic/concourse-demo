@@ -1,0 +1,14 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: alexwijn/docker-git-php-composer
+
+inputs:
+- name: source-code-with-dependencies
+
+run:
+  path: ci/scripts/run-tests.sh
+  dir: source-code-with-dependencies

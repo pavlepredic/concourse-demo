@@ -1,0 +1,96 @@
+---
+
+resource_types:
+
+- name: pull-request
+  type: docker-image
+  source:
+    repository: jtarchie/pr
+    
+resources:
+
+- name: source-code
+  type: pull-request
+  source:
+    repo: pavlepredic/concourse-demo
+    access_token: {{github_access_token}}
+    
+jobs:
+
+- name: php-linter
+  public: false
+  serial: true
+  plan:
+
+  # Trigger code tests when a PR is submitted
+  - get: source-code
+    trigger: true
+
+  # Set the code standards github status for this PR to pending
+  - put: source-code
+    params:
+      path: source-code
+      context: php-linter
+      status: pending
+
+  # Run linter against changed PHP files
+  - task: run-php-linter
+    file: source-code/ci/tasks/run-php-linter.yml
+
+    # If successful, set the code standards github status for this PR to success
+    on_success:
+      put: source-code
+      params:
+        path: source-code
+        context: php-linter
+        status: success
+
+    # If unsuccessful, set the code standards github status for this PR to unsuccessful
+    on_failure:
+      put: source-code
+      params:
+        path: source-code
+        context: php-linter
+        status: failure
+
+
+# Run PhpUnit Tests
+#-----------------------------------------------------------------------------------------------------------------------
+- name: run-tests
+  serial: true
+  plan:
+
+  # Trigger tests when a PR is merged
+  - get: source-code
+    trigger: true
+
+  # Set the tests github status for this PR to pending
+  - put: source-code
+    params:
+      path: source-code
+      context: tests
+      status: pending
+
+    # Install test dependencies
+  - task: install-dependencies
+    file: source-code/ci/tasks/install-dependencies.yml
+      
+  # Run tests
+  - task: run-tests
+    file: source-code-with-dependencies/ci/tasks/run-tests.yml
+
+  # On success, set the tests github status for this PR to success
+  on_success:
+    put: source-code
+    params:
+      path: source-code
+      context: tests
+      status: success
+
+  # On failure, set the tests github status for this PR to failure
+  on_failure:
+    put: source-code
+    params:
+      path: source-code
+      context: tests
+      status: failure

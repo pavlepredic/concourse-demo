@@ -1,0 +1,22 @@
+{
+    "name": "pavle/concourse-demo",
+    "type": "project",
+    "require": {
+        "psr/log": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.3"
+    },
+    "authors": [
+        {
+            "name": "Pavle Predic",
+            "email": "pavle.predic@movingimage.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "ConcourseDemo\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Tests\\ConcourseDemo\\": "tests/" }
+    }
+}
