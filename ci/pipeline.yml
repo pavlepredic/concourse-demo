@@ -17,46 +17,9 @@ resources:
     
 jobs:
 
-- name: php-linter
-  public: false
-  serial: true
-  plan:
-
-  # Trigger code tests when a PR is submitted
-  - get: source-code
-    trigger: true
-
-  # Set the code standards github status for this PR to pending
-  - put: source-code
-    params:
-      path: source-code
-      context: php-linter
-      status: pending
-
-  # Run linter against changed PHP files
-  - task: run-php-linter
-    file: source-code/ci/tasks/run-php-linter.yml
-
-    # If successful, set the code standards github status for this PR to success
-    on_success:
-      put: source-code
-      params:
-        path: source-code
-        context: php-linter
-        status: success
-
-    # If unsuccessful, set the code standards github status for this PR to unsuccessful
-    on_failure:
-      put: source-code
-      params:
-        path: source-code
-        context: php-linter
-        status: failure
-
-
-# Run PhpUnit Tests
+# Run Tests & linter
 #-----------------------------------------------------------------------------------------------------------------------
-- name: run-tests
+- name: test
   serial: true
   plan:
 
@@ -71,13 +34,17 @@ jobs:
       context: tests
       status: pending
 
-    # Install test dependencies
-  - task: install-dependencies
-    file: source-code/ci/tasks/install-dependencies.yml
+    # Build
+  - task: build
+    file: source-code/ci/tasks/build.yml
       
   # Run tests
   - task: run-tests
-    file: source-code-with-dependencies/ci/tasks/run-tests.yml
+    file: build-artifact/ci/tasks/run-tests.yml
+
+  # Run linter against changed PHP files
+  - task: run-php-linter
+    file: build-artifact/ci/tasks/run-php-linter.yml
 
   # On success, set the tests github status for this PR to success
   on_success:

@@ -7,4 +7,4 @@ set -e
 composer install --no-interaction --no-progress --prefer-dist
 
 # Output source with the dependencies
-cp -R . ../source-code-with-dependencies
+cp -R . ../build-artifact

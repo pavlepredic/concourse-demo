@@ -10,9 +10,9 @@ inputs:
   - name: source-code
 
 outputs:
-  - name: source-code-with-dependencies
+  - name: build-artifact
 
 run:
-  path: ci/scripts/install-dependencies.sh
+  path: ci/scripts/build.sh
   dir: source-code
 
