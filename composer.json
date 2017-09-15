@@ -18,5 +18,10 @@
     },
     "autoload-dev": {
         "psr-4": { "Tests\\ConcourseDemo\\": "tests/" }
+    },
+    "config": {
+        "platform": {
+            "php": "7.0"
+        }
     }
 }
