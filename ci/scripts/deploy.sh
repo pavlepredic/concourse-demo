@@ -4,7 +4,7 @@ set -e
 
 mkdir ~/.ssh
 echo $AWS_PRIVATE_KEY > ~/.ssh/id_rsa
-chmod 600 ~/.ssh/id_rsa`
+chmod 600 ~/.ssh/id_rsa
 echo StrictHostKeyChecking=no > ~/.ssh/config
 
 echo "Stopping server..."
