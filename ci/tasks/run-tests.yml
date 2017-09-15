@@ -7,8 +7,8 @@ image_resource:
     repository: alexwijn/docker-git-php-composer
 
 inputs:
-- name: source-code-with-dependencies
+- name: build-artifact
 
 run:
   path: ci/scripts/run-tests.sh
-  dir: source-code-with-dependencies
+  dir: build-artifact
