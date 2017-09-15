@@ -2,14 +2,18 @@
 
 set -e
 
+echo $AWS_PRIVATE_KEY > ~/.ssh/id_rsa
+chmod 600 ~/.ssh/id_rsa`
+echo StrictHostKeyChecking=no > ~/.ssh/config
+
 echo "Stopping server..."
-ssh -i <(echo $AWS_PRIVATE_KEY) $AWS_USERNAME@$AWS_IP "~/stop-server"
+ssh $AWS_USERNAME@$AWS_IP "~/stop-server"
 
 echo "Removing previous artifact..."
-ssh -i <(echo $AWS_PRIVATE_KEY) $AWS_USERNAME@$AWS_IP "rm -rf concourse-demo"
+ssh $AWS_USERNAME@$AWS_IP "rm -rf concourse-demo"
 
 echo "Copying new artifact..."
-scp -ri <(echo $AWS_PRIVATE_KEY) build-artifact $AWS_USERNAME@$AWS_IP:concourse-demo
+scp -r build-artifact $AWS_USERNAME@$AWS_IP:concourse-demo
 
 echo "Starting server..."
-ssh -i <(echo $AWS_PRIVATE_KEY) $AWS_USERNAME@$AWS_IP "~/start-server"
+ssh -$AWS_USERNAME@$AWS_IP "~/start-server"
