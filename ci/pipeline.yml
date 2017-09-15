@@ -34,6 +34,10 @@ jobs:
       context: tests
       status: pending
 
+  # Run linter against changed PHP files
+  - task: run-php-linter
+    file: source-code/ci/tasks/run-php-linter.yml
+
     # Build
   - task: build
     file: source-code/ci/tasks/build.yml
@@ -41,10 +45,6 @@ jobs:
   # Run tests
   - task: run-tests
     file: build-artifact/ci/tasks/run-tests.yml
-
-  # Run linter against changed PHP files
-  - task: run-php-linter
-    file: build-artifact/ci/tasks/run-php-linter.yml
 
   # On success, set the tests github status for this PR to success
   on_success:

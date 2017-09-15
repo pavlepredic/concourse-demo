@@ -7,8 +7,8 @@ image_resource:
     repository: alexwijn/docker-git-php-composer
 
 inputs:
-- name: build-artifact
+- name: source-code
 
 run:
   path: ci/scripts/run-php-linter.sh
-  dir: build-artifact
+  dir: source-code
