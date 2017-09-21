@@ -17,9 +17,43 @@ resources:
     
 jobs:
 
-# Run Tests & linter
-#-----------------------------------------------------------------------------------------------------------------------
-- name: test
+- name: linter
+  serial: true
+  plan:
+
+  # Trigger tests when a PR is merged
+  - get: source-code
+    trigger: true
+
+  # Set the tests github status for this PR to pending
+  - put: source-code
+    params:
+      path: source-code
+      context: linter
+      status: pending
+
+  # Run linter against changed PHP files
+  - task: run-php-linter
+    file: source-code/ci/tasks/run-php-linter.yml
+
+  # On success, set the tests github status for this PR to success
+  on_success:
+    put: source-code
+    params:
+      path: source-code
+      context: linter
+      status: success
+
+  # On failure, set the tests github status for this PR to failure
+  on_failure:
+    put: source-code
+    params:
+      path: source-code
+      context: linter
+      status: failure
+
+
+- name: tests
   serial: true
   plan:
 
@@ -34,14 +68,10 @@ jobs:
       context: tests
       status: pending
 
-  # Run linter against changed PHP files
-  - task: run-php-linter
-    file: source-code/ci/tasks/run-php-linter.yml
-
     # Build
   - task: build
     file: source-code/ci/tasks/build.yml
-      
+
   # Run tests
   - task: run-tests
     file: build-artifact/ci/tasks/run-tests.yml
@@ -62,13 +92,14 @@ jobs:
       context: tests
       status: failure
 
+
 - name: deploy
   serial: true
   plan:
 
   - get: source-code
     trigger: true
-    passed: [test]
+    passed: [tests, linter]
 
    # Build
   - task: build
