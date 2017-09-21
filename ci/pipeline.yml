@@ -64,6 +64,8 @@ jobs:
 
 - name: deploy
   serial: true
+  trigger: true
+  passed: [tests]
   plan:
 
   - get: source-code
