@@ -34,29 +34,8 @@ jobs:
   - get: source-code
     trigger: true
 
-  - put: source-code
-    params:
-      path: source-code
-      context: linter
-      status: pending
-
   - task: run-php-linter
     file: source-code/ci/tasks/run-php-linter.yml
-
-  on_success:
-    put: source-code
-    params:
-      path: source-code
-      context: linter
-      status: success
-
-  on_failure:
-    put: source-code
-    params:
-      path: source-code
-      context: linter
-      status: failure
-
 
 - name: tests
   serial: true
@@ -65,32 +44,11 @@ jobs:
   - get: source-code
     trigger: true
 
-  - put: source-code
-    params:
-      path: source-code
-      context: tests
-      status: pending
-
   - task: build
     file: source-code/ci/tasks/build.yml
 
   - task: run-tests
     file: build-artifact/ci/tasks/run-tests.yml
-
-  on_success:
-    put: source-code
-    params:
-      path: source-code
-      context: tests
-      status: success
-
-  on_failure:
-    put: source-code
-    params:
-      path: source-code
-      context: tests
-      status: failure
-
 
 - name: create-release
   serial: true
