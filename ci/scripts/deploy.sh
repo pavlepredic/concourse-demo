@@ -12,7 +12,7 @@ DEPLOYMENT_NAME=concourse-demo
 ssh $AWS_USERNAME@$AWS_IP "ls $DEPLOYMENT_NAME"
 if [ $? == 0 ]; then
     echo "Stopping server..."
-    ssh $AWS_USERNAME@$AWS_IP "$DEPLOYMENT_NAME/bin/stop-server"
+    ssh $AWS_USERNAME@$AWS_IP "~/$DEPLOYMENT_NAME/bin/stop-server"
 
     echo "Removing previous artifact..."
     ssh $AWS_USERNAME@$AWS_IP "rm -rf $DEPLOYMENT_NAME"
@@ -22,6 +22,6 @@ echo "Copying new artifact..."
 scp -r . $AWS_USERNAME@$AWS_IP:$DEPLOYMENT_NAME
 
 echo "Starting server..."
-ssh $AWS_USERNAME@$AWS_IP "$DEPLOYMENT_NAME/bin/start-server"
+ssh $AWS_USERNAME@$AWS_IP "~/$DEPLOYMENT_NAME/bin/start-server"
 
 echo "Done"
