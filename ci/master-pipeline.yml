@@ -5,7 +5,7 @@ resources:
 - name: source-code
   type: git
   source:
-    uri: git@github.com:pavlepredic/concourse-demo
+    uri: git@github.com:pavlepredic/concourse-demo.git
     branch: master
     private_key: {{github_private_key}}
 
