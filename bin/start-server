@@ -1,0 +1,14 @@
+#!/bin/bash
+
+USER=$(whoami)
+LOG=/var/log/server.log
+
+if [ ! -f "$LOG" ]; then
+    sudo touch "$LOG"
+    sudo chown $USER:$USER "$LOG"
+fi
+
+IP=$(/sbin/ifconfig eth | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
+echo Starting server on IP "$IP:8080"
+php -S "$IP":8080 -t concourse-demo/web >> "$LOG" 2>&1 &
+echo $! > /tmp/.php.pid
