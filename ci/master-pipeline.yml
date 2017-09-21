@@ -58,6 +58,8 @@ jobs:
     trigger: true
     passed: [linter,tests]
 
+  - get: github-release
+  
   - task: build
     file: source-code/ci/tasks/build.yml
 
