@@ -14,7 +14,7 @@ echo "Removing previous artifact..."
 ssh $AWS_USERNAME@$AWS_IP "rm -rf concourse-demo"
 
 echo "Copying new artifact..."
-scp -r build-artifact $AWS_USERNAME@$AWS_IP:concourse-demo
+scp -r . $AWS_USERNAME@$AWS_IP:concourse-demo
 
 echo "Starting server..."
 ssh -$AWS_USERNAME@$AWS_IP "~/start-server"
