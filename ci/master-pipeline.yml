@@ -9,6 +9,13 @@ resources:
     branch: master
     private_key: {{github_private_key}}
 
+- name: version-branch
+  type: git
+  source:
+    uri: git@github.com:pavlepredic/concourse-demo.git
+    branch: version
+    private_key: {{github_private_key}}
+
 - name: release
   type: github-release
   source:
@@ -58,7 +65,8 @@ jobs:
     trigger: true
     passed: [linter,tests]
 
-  - get: version
+  - get: version-branch
+    version: every
 
   - task: build
     file: source-code/ci/tasks/build.yml
@@ -68,8 +76,8 @@ jobs:
 
   - put: release
     params:
-      name: version/version
-      tag: version/version
+      name: version-branch/version
+      tag: version-branch/version
       globs:
       - releases/*.tar.gz
 
