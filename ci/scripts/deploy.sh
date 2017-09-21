@@ -18,7 +18,7 @@ fi
 
 set -e
 
-if [ $HAS_PREVIOUS_DEPLOYMENTS == 1 ]
+if [ $HAS_PREVIOUS_DEPLOYMENTS == 1 ]; then
     echo "Stopping server..."
     ssh $AWS_USERNAME@$AWS_IP "~/$DEPLOYMENT_NAME/bin/stop-server"
 
