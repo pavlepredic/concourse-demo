@@ -1,0 +1,118 @@
+---
+
+resources:
+
+- name: source-code
+  type: git
+  source:
+    uri: git@github.com:pavlepredic/concourse-demo
+    branch: master
+    private_key: {{github_private_key}}
+
+- name: github-release
+  type: github-release
+  source:
+    owner: pavlepredic
+    repository: concourse-demo
+    access_token: {{github_access_token}}
+
+- name: version
+  type: semver
+  source:
+    driver: git
+    uri: git@github.com:pavlepredic/concourse-demo
+    branch: master
+    file: version
+    private_key: {{github_private_key}}
+
+jobs:
+
+- name: linter
+  serial: true
+  plan:
+
+  - get: source-code
+    trigger: true
+
+  - put: source-code
+    params:
+      path: source-code
+      context: linter
+      status: pending
+
+  - task: run-php-linter
+    file: source-code/ci/tasks/run-php-linter.yml
+
+  on_success:
+    put: source-code
+    params:
+      path: source-code
+      context: linter
+      status: success
+
+  on_failure:
+    put: source-code
+    params:
+      path: source-code
+      context: linter
+      status: failure
+
+
+- name: tests
+  serial: true
+  plan:
+
+  - get: source-code
+    trigger: true
+
+  - put: source-code
+    params:
+      path: source-code
+      context: tests
+      status: pending
+
+  - task: build
+    file: source-code/ci/tasks/build.yml
+
+  - task: run-tests
+    file: build-artifact/ci/tasks/run-tests.yml
+
+  on_success:
+    put: source-code
+    params:
+      path: source-code
+      context: tests
+      status: success
+
+  on_failure:
+    put: source-code
+    params:
+      path: source-code
+      context: tests
+      status: failure
+
+
+- name: create-release
+  serial: true
+  plan:
+
+  - get: source-code
+    trigger: true
+    passed: [linter,tests]
+
+  - task: build
+    file: source-code/ci/tasks/build.yml
+
+  - task: create-tar
+    file: build-artifact/ci/tasks/create-tar.yml 
+
+  - put: github-release
+    params:
+      name: version
+      tag: version
+      globs:
+      - releases/*.tar.gz
+
+  - put: version
+    params:
+      bump: patch
