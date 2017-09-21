@@ -9,7 +9,7 @@ resources:
     branch: master
     private_key: {{github_private_key}}
 
-- name: github-release
+- name: release
   type: github-release
   source:
     owner: pavlepredic
@@ -21,7 +21,7 @@ resources:
   source:
     driver: git
     uri: git@github.com:pavlepredic/concourse-demo
-    branch: master
+    branch: version
     file: version
     private_key: {{github_private_key}}
 
@@ -58,18 +58,18 @@ jobs:
     trigger: true
     passed: [linter,tests]
 
-  - get: github-release
-  
+  - get: version
+
   - task: build
     file: source-code/ci/tasks/build.yml
 
   - task: create-tar
     file: build-artifact/ci/tasks/create-tar.yml 
 
-  - put: github-release
+  - put: release
     params:
-      name: version
-      tag: version
+      name: version/version
+      tag: version/version
       globs:
       - releases/*.tar.gz
 
