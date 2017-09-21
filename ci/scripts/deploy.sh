@@ -17,4 +17,4 @@ echo "Copying new artifact..."
 scp -r . $AWS_USERNAME@$AWS_IP:concourse-demo
 
 echo "Starting server..."
-ssh -$AWS_USERNAME@$AWS_IP "~/start-server"
+ssh $AWS_USERNAME@$AWS_IP "~/start-server"
