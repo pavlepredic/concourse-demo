@@ -9,28 +9,12 @@ resources:
     branch: master
     private_key: {{github_private_key}}
 
-- name: version-branch
-  type: git
-  source:
-    uri: git@github.com:pavlepredic/concourse-demo.git
-    branch: version
-    private_key: {{github_private_key}}
-
 - name: release
   type: github-release
   source:
     owner: pavlepredic
     repository: concourse-demo
     access_token: {{github_access_token}}
-
-- name: version
-  type: semver
-  source:
-    driver: git
-    uri: git@github.com:pavlepredic/concourse-demo
-    branch: version
-    file: version
-    private_key: {{github_private_key}}
 
 jobs:
 
@@ -65,9 +49,6 @@ jobs:
     trigger: true
     passed: [linter,tests]
 
-  - get: version-branch
-    version: every
-
   - task: build
     file: source-code/ci/tasks/build.yml
 
@@ -76,11 +57,7 @@ jobs:
 
   - put: release
     params:
-      name: version-branch/version
-      tag: version-branch/version
+      name: build-artifact/version
+      tag: build-artifact/version
       globs:
       - releases/*.tar.gz
-
-  - put: version
-    params:
-      bump: patch
