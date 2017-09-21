@@ -9,6 +9,7 @@ if [ ! -f "$LOG" ]; then
 fi
 
 IP=$(/sbin/ifconfig eth | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
-echo Starting server on IP "$IP:8080"
-php -S "$IP":8080 -t concourse-demo/web >> "$LOG" 2>&1 &
+PORT=80
+echo Starting server on IP "$IP:$PORT"
+sudo php -S "$IP":$PORT -t concourse-demo/web >> "$LOG" 2>&1 &
 echo $! > /tmp/.php.pid
