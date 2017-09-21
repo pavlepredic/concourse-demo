@@ -7,16 +7,21 @@ echo "$AWS_PRIVATE_KEY" > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
 echo StrictHostKeyChecking=no > ~/.ssh/config
 
-echo "Stopping server..."
-ssh $AWS_USERNAME@$AWS_IP "~/stop-server"
+DEPLOYMENT_NAME=concourse-demo
 
-echo "Removing previous artifact..."
-ssh $AWS_USERNAME@$AWS_IP "rm -rf concourse-demo"
+ssh $AWS_USERNAME@$AWS_IP "ls $DEPLOYMENT_NAME"
+if [ $? == 0 ]; then
+    echo "Stopping server..."
+    ssh $AWS_USERNAME@$AWS_IP "$DEPLOYMENT_NAME/bin/stop-server"
+
+    echo "Removing previous artifact..."
+    ssh $AWS_USERNAME@$AWS_IP "rm -rf $DEPLOYMENT_NAME"
+fi
 
 echo "Copying new artifact..."
-scp -r . $AWS_USERNAME@$AWS_IP:concourse-demo
+scp -r . $AWS_USERNAME@$AWS_IP:$DEPLOYMENT_NAME
 
 echo "Starting server..."
-ssh $AWS_USERNAME@$AWS_IP "~/start-server"
+ssh $AWS_USERNAME@$AWS_IP "$DEPLOYMENT_NAME/bin/start-server"
 
 echo "Done"

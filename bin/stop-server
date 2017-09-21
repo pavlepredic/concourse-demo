@@ -1,0 +1,6 @@
+#!/bin/bash
+
+if [ -f /tmp/.php.pid ]; then
+    sudo kill $(cat /tmp/.php.pid)
+    sudo rm /tmp/.php.pid
+fi
