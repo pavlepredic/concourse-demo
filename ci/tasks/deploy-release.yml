@@ -11,5 +11,5 @@ inputs:
   - name: source-code
 
 run:
-  path: ci/scripts/deploy-release.sh
+  path: source-code/ci/scripts/deploy-release.sh
 
