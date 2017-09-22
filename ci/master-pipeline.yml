@@ -75,7 +75,7 @@ jobs:
   - get: source-code
 
   - task: deploy
-    file: source-code/ci/tasks/deploy.yml
+    file: source-code/ci/tasks/deploy-release.yml
     params:
       AWS_PRIVATE_KEY: {{aws_private_key}}
       AWS_USERNAME: {{aws_username}}
