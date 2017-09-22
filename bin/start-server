@@ -11,5 +11,5 @@ fi
 IP=$(/sbin/ifconfig eth | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}')
 PORT=80
 echo Starting server on IP "$IP:$PORT"
-sudo php -S "$IP":$PORT -t concourse-demo/web >> "$LOG" 2>&1 &
+sudo -E php -S "$IP":$PORT -t concourse-demo/web >> "$LOG" 2>&1 &
 echo $! > /tmp/.php.pid
