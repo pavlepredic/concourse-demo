@@ -80,3 +80,4 @@ jobs:
       AWS_PRIVATE_KEY: {{aws_private_key}}
       AWS_USERNAME: {{aws_username}}
       AWS_IP: {{aws_production_ip}}
+      APP_ENV: production

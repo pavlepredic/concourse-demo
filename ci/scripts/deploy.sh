@@ -30,6 +30,6 @@ echo "Copying new artifact..."
 scp -r . $AWS_USERNAME@$AWS_IP:$DEPLOYMENT_NAME
 
 echo "Starting server..."
-ssh $AWS_USERNAME@$AWS_IP "~/$DEPLOYMENT_NAME/bin/start-server"
+ssh $AWS_USERNAME@$AWS_IP "APP_ENV=$APP_ENV ~/$DEPLOYMENT_NAME/bin/start-server"
 
 echo "Done"
