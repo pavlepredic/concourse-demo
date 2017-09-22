@@ -2,6 +2,7 @@
 
 set -e
 
+cd release
 tar -xzf concourse-demo.tar.gz
 
-./deploy.sh
+../source-code/ci/scripts/deploy.sh

@@ -12,5 +12,4 @@ inputs:
 
 run:
   path: ci/scripts/deploy-release.sh
-  dir: release
 
