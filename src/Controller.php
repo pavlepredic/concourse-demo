@@ -21,6 +21,7 @@ class Controller
         return $this->twig->render('index.html.twig', [
             'name' => $model->getName(),
             'title' => $model->getName(),
+            'env' => getenv('APP_ENV') ?: 'undefined environment',
         ]);
     }
 }
