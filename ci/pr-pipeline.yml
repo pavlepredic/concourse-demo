@@ -17,26 +17,22 @@ resources:
     
 jobs:
 
-- name: linter
+- name: Run linter
   serial: true
   plan:
 
-  # Trigger tests when a PR is merged
   - get: source-code
     trigger: true
 
-  # Set the tests github status for this PR to pending
   - put: source-code
     params:
       path: source-code
       context: linter
       status: pending
 
-  # Run linter against changed PHP files
   - task: run-php-linter
     file: source-code/ci/tasks/run-php-linter.yml
 
-  # On success, set the tests github status for this PR to success
   on_success:
     put: source-code
     params:
@@ -44,7 +40,6 @@ jobs:
       context: linter
       status: success
 
-  # On failure, set the tests github status for this PR to failure
   on_failure:
     put: source-code
     params:
@@ -53,30 +48,25 @@ jobs:
       status: failure
 
 
-- name: tests
+- name: Run tests
   serial: true
   plan:
 
-  # Trigger tests when a PR is merged
   - get: source-code
     trigger: true
 
-  # Set the tests github status for this PR to pending
   - put: source-code
     params:
       path: source-code
       context: tests
       status: pending
 
-    # Build
   - task: build
     file: source-code/ci/tasks/build.yml
 
-  # Run tests
   - task: run-tests
     file: build-artifact/ci/tasks/run-tests.yml
 
-  # On success, set the tests github status for this PR to success
   on_success:
     put: source-code
     params:
@@ -84,7 +74,6 @@ jobs:
       context: tests
       status: success
 
-  # On failure, set the tests github status for this PR to failure
   on_failure:
     put: source-code
     params:
@@ -93,22 +82,22 @@ jobs:
       status: failure
 
 
-- name: deploy
+- name: Deploy to staging
   serial: true
   plan:
 
   - get: source-code
     trigger: true
-    passed: [tests, linter]
+    passed:
+      - Run tests
+      - Run linter
 
-   # Build
   - task: build
     file: source-code/ci/tasks/build.yml
 
-   # Deploy
   - task: deploy
     file: build-artifact/ci/tasks/deploy.yml
     params:
       AWS_PRIVATE_KEY: {{aws_private_key}}
       AWS_USERNAME: {{aws_username}}
-      AWS_IP: {{aws_ip}}
+      AWS_IP: {{aws_staging_ip}}

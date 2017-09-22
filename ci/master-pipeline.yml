@@ -18,7 +18,7 @@ resources:
 
 jobs:
 
-- name: linter
+- name: Run linter
   serial: true
   plan:
 
@@ -28,7 +28,7 @@ jobs:
   - task: run-php-linter
     file: source-code/ci/tasks/run-php-linter.yml
 
-- name: tests
+- name: Run tests
   serial: true
   plan:
 
@@ -41,13 +41,15 @@ jobs:
   - task: run-tests
     file: build-artifact/ci/tasks/run-tests.yml
 
-- name: create-release
+- name: Create release
   serial: true
   plan:
 
   - get: source-code
     trigger: true
-    passed: [linter,tests]
+    passed:
+      - Run linter
+      - Run tests
 
   - task: build
     file: source-code/ci/tasks/build.yml
@@ -61,3 +63,20 @@ jobs:
       tag: build-artifact/version
       globs:
       - releases/*.tar.gz
+
+- name: Deploy to production
+  serial: true
+  plan:
+
+  - get: release
+    passed:
+      - Create release
+
+  - get: source-code
+
+  - task: deploy
+    file: source-code/ci/tasks/deploy.yml
+    params:
+      AWS_PRIVATE_KEY: {{aws_private_key}}
+      AWS_USERNAME: {{aws_username}}
+      AWS_IP: {{aws_production_ip}}
