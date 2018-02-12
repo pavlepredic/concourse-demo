@@ -6,6 +6,6 @@ class Model
 {
     public function getName()
     {
-        return 'Concourse';
+        return 'Jenkins';
     }
 }
