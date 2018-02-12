@@ -4,7 +4,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: alexwijn/docker-git-php-composer
+    repository: ubuntu
 
 inputs:
 - name: build-artifact

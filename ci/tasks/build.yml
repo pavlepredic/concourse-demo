@@ -13,6 +13,6 @@ outputs:
   - name: build-artifact
 
 run:
-  path: ci/scripts/builds.sh
+  path: ci/scripts/build.sh
   dir: source-code
 
